@@ -108,6 +108,11 @@ and real test evidence. No provider dependency or provider credential is baked
 into the memory service. Use `examples/cross_agent.py` for the executable
 two-process version without a model call.
 
+`memory_recall` also returns exact matching `messages` when an agent has recorded
+a source event but no derived memory exists yet. These matches are bounded by the
+same request budget and are evidence, not accepted durable knowledge; promote a
+message to a sourced memory before relying on it as a project decision.
+
 For the complete tool-loop boundary, import `run_agent` from
 `examples/agent_tool_loop.py` and supply `next_turn(messages, tools)` from your
 model SDK. That callback must translate the provider response into this shape:
@@ -170,7 +175,7 @@ availability alone does not guarantee calls or automatic conversation capture.
 |---|---|---|
 | `memory_connect` | `POST /api/connect` | Platform, task, heartbeat |
 | `memory_state` | `GET /api/context` | Small startup snapshot |
-| `memory_recall` | `POST /api/recall` | Budgeted handles and paths |
+| `memory_recall` | `POST /api/recall` | Budgeted memory handles/paths and exact matching source messages |
 | `memory_expand` | `GET /api/memories/{id}?version=…` | Original evidence |
 | `memory_remember` | `POST /api/memories` | Sourced write with retry key |
 | `memory_update` | `PUT /api/memories/{id}` | Version-checked correction |

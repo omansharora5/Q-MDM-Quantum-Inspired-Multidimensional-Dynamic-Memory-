@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Q-MDM: One memory, every agent</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="video" class="video" aria-label="Q-MDM product story">
+    <header class="brandbar">
+      <div class="brandmark"><span class="brand-dot"></span><span>Q-MDM</span></div>
+      <div class="brand-subtitle">shared memory for independent agents</div>
+      <div class="runtime">LOCAL · EVIDENCE-BACKED</div>
+    </header>
+
+    <section class="scene scene-problem active" data-scene="problem">
+      <div class="eyebrow">THE PROBLEM</div>
+      <h1>AI agents work in separate chats.</h1>
+      <p class="lead">The same decision gets buried, repeated, or lost.</p>
+      <div class="chat-row">
+        <article class="agent-card card-left">
+          <div class="card-head"><span class="avatar avatar-a">A</span><div><b>Agent A</b><small>researcher</small></div><i class="live-dot"></i></div>
+          <div class="bubble user-bubble">Use the express coach.<span class="bubble-time">10:14</span></div>
+          <div class="bubble faded-bubble">I’ll remember that here.</div>
+        </article>
+        <div class="broken-bridge"><span></span><span></span><span></span><b>no shared context</b></div>
+        <article class="agent-card card-right">
+          <div class="card-head"><span class="avatar avatar-b">B</span><div><b>Agent B</b><small>builder</small></div><i class="live-dot idle"></i></div>
+          <div class="bubble question-bubble">What changed about travel?</div>
+          <div class="missing"><span>?</span> Nothing found</div>
+        </article>
+      </div>
+      <div class="scene-number">01 <span>/ 05</span></div>
+    </section>
+
+    <section class="scene scene-capture" data-scene="capture">
+      <div class="eyebrow">THE FIX</div>
+      <h1>One message. One shared memory.</h1>
+      <p class="lead">Q-MDM stores the exact source, then adds a versioned memory on top.</p>
+      <div class="capture-layout">
+        <div class="source-message">
+          <div class="card-head"><span class="avatar avatar-a">A</span><div><b>Agent A</b><small>source message</small></div><span class="source-pill">SAVED</span></div>
+          <p>“The rail line is closed. Change the plan to the express coach.”</p>
+          <footer>source · exact text · timestamped</footer>
+        </div>
+        <div class="capture-arrow">→</div>
+        <div class="memory-node">
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+          <div class="node-core"><span>MEMORY</span><b>coach plan</b></div>
+          <div class="node-meta"><span>v2</span><span>accepted</span><span>shared</span></div>
+        </div>
+      </div>
+      <div class="proof-strip"><span class="check">✓</span> source preserved <span class="divider"></span><span class="check">✓</span> version checked <span class="divider"></span><span class="check">✓</span> scoped to the project</div>
+      <div class="scene-number">02 <span>/ 05</span></div>
+    </section>
+
+    <section class="scene scene-change" data-scene="change">
+      <div class="eyebrow">WHEN PLANS CHANGE</div>
+      <h1>History stays visible.</h1>
+      <p class="lead">A new decision becomes current without erasing the old one.</p>
+      <div class="version-board">
+        <div class="history-line"><span class="line-fill"></span><i class="history-dot old"></i><i class="history-dot current"></i><span class="line-label old-label">v1 · train</span><span class="line-label current-label">v2 · coach</span></div>
+        <div class="version-card old-version"><span class="version-tag">VERSION 1</span><h2>Saturday train</h2><p>Original plan, kept as evidence.</p><small>history · inspectable</small></div>
+        <div class="version-card current-version"><span class="version-tag current-tag">VERSION 2 · CURRENT</span><h2>Express coach</h2><p>New plan, linked to the change.</p><small>accepted · shared with Agent B</small></div>
+        <div class="change-label"><span class="spark">↗</span> rail closure changed the route</div>
+      </div>
+      <div class="scene-number">03 <span>/ 05</span></div>
+    </section>
+
+    <section class="scene scene-recall" data-scene="recall">
+      <div class="eyebrow">THE HANDOFF</div>
+      <h1>Another agent asks. Evidence answers.</h1>
+      <p class="lead">Recall returns the connected context, not a dump of everything.</p>
+      <div class="recall-layout">
+        <div class="agent-question"><div class="card-head"><span class="avatar avatar-b">B</span><div><b>Agent B</b><small>new session</small></div></div><div class="ask">What changed about the travel plan?</div><span class="ask-cursor"></span></div>
+        <div class="signal-graph"><div class="signal-line line-a"></div><div class="signal-line line-b"></div><div class="signal-line line-c"></div><span class="signal-node node-question">?</span><span class="signal-node node-memory">M</span><span class="signal-node node-source">S</span><span class="signal-node node-history">H</span></div>
+        <div class="evidence-card"><span class="evidence-label">RECALLED EVIDENCE</span><h2>Express coach</h2><p>The rail line is closed for maintenance. The current plan uses the express coach.</p><div class="evidence-foot"><span>source message</span><span>memory · v2</span></div></div>
+      </div>
+      <div class="scene-number">04 <span>/ 05</span></div>
+    </section>
+
+    <section class="scene scene-end" data-scene="end">
+      <div class="end-orbit orbit-a"></div><div class="end-orbit orbit-b"></div><div class="end-orbit orbit-c"></div>
+      <div class="end-core"><span class="brand-dot"></span><b>Q-MDM</b></div>
+      <h1>One memory.<br><em>Every agent.</em></h1>
+      <p class="end-copy">Shared, sourced, versioned context for work that keeps moving.</p>
+      <div class="end-tags"><span>MCP</span><span>REST</span><span>SQLite-first</span><span>evidence-backed</span></div>
+      <div class="scene-number">05 <span>/ 05</span></div>
+    </section>
+
+    <footer class="progressbar"><span id="progress-fill"></span><span id="progress-time">00:00 / 00:20</span></footer>
+  </main>
+  <script src="video.js"></script>
+</body>
+</html>

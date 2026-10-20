@@ -16,6 +16,9 @@ falkordb = ["falkordb>=1.2,<2"]
 [project.scripts]
 mnemograph = "mnemograph.cli:main"
 
+[tool.vercel]
+entrypoint = "api.index:app"
+
 [tool.setuptools.packages.find]
 include = ["mnemograph*"]
 

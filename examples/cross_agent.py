@@ -2,6 +2,7 @@
 import json
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 from mnemograph.client import MemoryClient
@@ -21,15 +22,19 @@ def main():
         client.connect("independent-python-process", "Camera architecture handoff")
         if role == "researcher":
             title, kind, content, cues = SAMPLES[2]
+            message = client.message({"role":"user", "text":content, "at":datetime.now(timezone.utc).isoformat(),
+                                      "platform":"independent-python-process", "session_id":"cross-agent-demo-v3",
+                                      "dataset":"camera-lab", "idempotency_key":"cross-agent-demo-v3:message"})
             memory = Memory(title=title,kind=kind,content=content,cues=cues,status="accepted",synthetic=True,dataset="camera-lab",
-                            source={"title":"Synthetic bench note","text":content})
-            receipt = client.remember(memory.model_dump(mode="json"),"cross-agent-demo-v2")
+                            source_message_id=message["id"], source={"title":"Synthetic bench note","text":content})
+            receipt = client.remember(memory.model_dump(mode="json"),"cross-agent-demo-v3")
             client.handoff("Implement camera capture","developer","Continue using the sourced four-camera decision.",
-                           [receipt["id"]],"cross-agent-handoff-v2")
+                           [receipt["id"]],"cross-agent-handoff-v3")
             print("Researcher saved a sourced memory and handed off the capture task.")
         else:
-            packet = client.recall("hardware constraints", dataset="camera-lab")
+            packet = client.recall("four camera", dataset="camera-lab")
             assert packet["handles"], packet
+            assert any(item["text"] == SAMPLES[2][2] for item in packet["messages"])
             evidence = [client.expand(h["id"], h["version"]) for h in packet["handles"]]
             assert any("four" in e["payload"]["content"].lower() for e in evidence)
             assert any(task["payload"]["target_agent"] == role for task in client.state()["tasks"])

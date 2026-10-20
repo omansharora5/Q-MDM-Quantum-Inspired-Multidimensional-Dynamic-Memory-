@@ -1,0 +1,4 @@
+# Runtime dependencies for the Vercel FastAPI deployment.
+# MCP/httpx/uvicorn are only needed by the local CLI and MCP server.
+fastapi>=0.115,<1
+numpy>=2,<3

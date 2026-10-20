@@ -14,6 +14,76 @@ The current product is independent of the original hackathon. See the
 
 ![Memory explorer](docs/assets/qmdm-explorer-2026-10-20.png)
 
+## Deploy on Vercel
+
+The dashboard and REST API deploy as one Vercel Function. The entrypoint is
+`api/index.py`, which exports the ASGI `app`; `pyproject.toml` points Vercel at
+it with `[tool.vercel] entrypoint = "api.index:app"`. No build command or
+`vercel.json` rewrites are required.
+
+1. Push this repository to GitHub.
+2. Import it at [vercel.com/new](https://vercel.com/new). Vercel detects
+   FastAPI from the dependencies, installs them, and routes all paths to the
+   app. The dashboard, `/api/*`, `/style.css`, and `/app.js` are served by the
+   same ASGI application.
+3. Deploy. Or use the CLI:
+
+```powershell
+npm install -g vercel
+vercel login
+vercel --prod
+```
+
+The public demo key is:
+
+```text
+qmdm-demo-aDr9oE5I8I4utiyPlIpTeOYJDCYD43FU7CPXMt7COFg
+```
+
+Paste it into the dashboard login. This key is intentionally published: it
+opens the disposable Vercel demo only. It is **not** a key for a local install;
+local keys are generated in `.local/keys.json`. Treat the demo as a sandbox,
+not durable storage.
+
+### What the Vercel adapter does
+
+- Exports `app` for Vercel's Python runtime.
+- Stores SQLite at `/tmp/mnemograph/memory.db`. Vercel Functions have a
+  read-only filesystem except `/tmp`, so this is the only writable local path.
+- Seeds eight synthetic memories on cold start. `MNEMO_AUTOSEED=0` disables it.
+- Allows any host in the deployment adapter. The local server still defaults to
+  `localhost`, `127.0.0.1`, `[::1]`, and `testserver`; override with
+  `MNEMO_ALLOWED_HOSTS` (comma-separated).
+- Replaces the browser origin check with a host comparison, so HTTPS Vercel
+  deployments work behind the proxy without allowing cross-origin requests.
+
+Optional environment variables:
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `MNEMO_DEMO_KEY` | the public key above | Rotate the demo credential. Redeploy or start a new instance after changing it. |
+| `MNEMO_DATA_DIR` | `/tmp/mnemograph` | Move the SQLite file. Must stay writable. |
+| `MNEMO_AUTOSEED` | `1` | Set to `0` to skip sample memories. |
+| `MNEMO_ALLOWED_HOSTS` | localhost list | Comma-separated host allowlist for the local server. |
+
+### Vercel limits you must know
+
+- `/tmp` is per-instance and ephemeral. Data is lost on cold starts, and two
+  concurrent function instances can hold different SQLite files. This demo is
+  suitable for browsing and testing, not for real shared memory.
+- The stdio MCP server is a local process and is not available on Vercel. Use
+  the REST API or run the MCP server locally against a hosted store.
+- SQLite on a network filesystem is not a safe durable option. For durable
+  hosting, move the store to PostgreSQL or Turso/libSQL before real use.
+
+Check a deployment:
+
+```powershell
+curl.exe https://YOUR-PROJECT.vercel.app/api/health
+curl.exe -H "Authorization: Bearer qmdm-demo-aDr9oE5I8I4utiyPlIpTeOYJDCYD43FU7CPXMt7COFg" `
+  https://YOUR-PROJECT.vercel.app/api/state
+```
+
 ## Run locally on Windows
 
 ```powershell
@@ -121,6 +191,8 @@ identity provider or encrypted secret vault in this foundation.
 
 - Exact source messages, candidate staging, core, episodic, fact, decision,
   procedural, resource, hypothesis and insight records.
+- Independent agents can recall exact matching source messages before a derived
+  memory exists; those messages remain untrusted evidence until promoted.
 - BM25, lexical TF-IDF cosine, bounded graph traversal, PPR and PACE evidence
   bundles, plus an experimental classical quantum-walk simulation. Up to eight
   seeds, two hops and forty visited candidates per graph recall.

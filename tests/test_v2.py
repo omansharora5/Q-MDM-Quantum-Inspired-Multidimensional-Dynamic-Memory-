@@ -98,6 +98,21 @@ def test_source_message_quote_and_promotion_are_governed(environment):
     assert save(client,"promote",{**full["payload"],"status":"accepted"},memory_id=proposed["id"],version=1).status_code == 200
 
 
+def test_independent_agent_can_recall_an_exact_message_without_a_derived_memory(environment):
+    client, _, _ = environment
+    original = {"role":"user","text":"The shared transport note says use the express coach.",
+                "at":"2026-10-18T10:00:00Z","session_id":"shared-chat","idempotency_key":"shared-message"}
+    created = client.post("/api/messages",headers=headers(),json=original).json()
+    packet = client.post("/api/recall",headers=headers("b"),json={"query":"express coach"}).json()
+    assert packet["handles"] == []
+    match = packet["messages"][0]
+    assert match["id"] == created["id"] and match["text"] == original["text"]
+    assert match["role"] == original["role"] and match["session_id"] == original["session_id"]
+    assert not packet["insufficient_evidence"]
+    trace = client.get("/api/state",headers=headers("b")).json()["traces"][-1]
+    assert original["text"] not in str(trace) and trace["payload"]["message_ids"] == [created["id"]]
+
+
 def test_supersession_is_explicit_and_current_recall_excludes_predecessor(environment):
     client, _, _ = environment
     first = save(client,"train",memory(claim_key="transport",claim_value="train")).json()

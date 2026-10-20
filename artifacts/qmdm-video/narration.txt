@@ -1,0 +1,1 @@
+AI agents work in separate chats. The same decision gets buried, repeated, or lost. Q-MDM gives them one shared memory graph. A message becomes sourced, versioned evidence. When a plan changes, history stays visible. Another agent recalls the exact context it needs. Less repetition. More continuity. Q-MDM: one memory, every agent.

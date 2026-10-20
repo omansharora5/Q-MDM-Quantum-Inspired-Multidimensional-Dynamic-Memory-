@@ -33,7 +33,7 @@ def memory_state() -> dict:
 @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
 def memory_recall(query: str, budget_chars: int = 2400, max_hops: int = 2, as_of: str | None = None,
                   dataset: str | None = None, strategy: str = "pace", cursor: str | None = None, intent: str | None = None) -> dict:
-    """Get compact memory handles and evidence paths. Full records require memory_expand."""
+    """Get compact memory handles, evidence paths, and exact matching source messages."""
     return call("recall", query, budget_chars, max_hops, as_of, dataset=dataset, strategy=strategy, cursor=cursor, intent=intent)
 
 

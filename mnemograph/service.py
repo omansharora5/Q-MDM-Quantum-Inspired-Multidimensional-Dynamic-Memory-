@@ -69,7 +69,9 @@ class MemoryService:
             packet["knowledge_changed"] = cursor["payload"].get("memory_revision") != knowledge_revision(snapshot)
         packet["memory_revision"] = knowledge_revision(snapshot)
         trace_id = "q-" + uuid4().hex
-        self.store.commit(scope, trace_id, "trace", {"query": request.query, **packet}, 0, trace_id, fingerprint(packet))
+        trace_packet = {key: value for key, value in packet.items() if key not in ("context", "messages")}
+        trace_packet["message_ids"] = [message["id"] for message in packet.get("messages", [])]
+        self.store.commit(scope, trace_id, "trace", {"query": request.query, **trace_packet}, 0, trace_id, fingerprint(trace_packet))
         return {"trace_id": trace_id, "continuation": trace_id, **packet}
 
     def context(self, scope):

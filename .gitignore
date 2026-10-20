@@ -1,6 +1,8 @@
 .venv/
 .local/
 .local*/
+.opencode/
+.vercel/
 __pycache__/
 .pytest_cache/
 *.egg-info/

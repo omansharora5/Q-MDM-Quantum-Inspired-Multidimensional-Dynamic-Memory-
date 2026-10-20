@@ -97,3 +97,30 @@ Before changing the authority, export and verify current entities, every permitt
 The source pages above were accessible on the review date. The Tencent repository identification remains probable rather than certain without the user's original link. Kuzu's archive status, Ladybug's documented concurrency limit and the listed license identities were checked against their first-party repositories/docs. A direct FalkorDB vector-doc URL failed, so its official organization-hosted staging documentation is cited; support in the exact deployed version needs testing. Some guessed raw license URLs failed; the actual repository license links or project declarations supplied the license evidence.
 
 No alternative engine was installed, benchmarked, crash-tested or security-audited here. Native Windows support in documentation does not establish a successful installation on this host. The previous absence of Docker/WSL is session context, not a fresh system inventory. No vendor latency or scale claim is adopted as a measured result for MnemoGraph. This document proposes a direction; it does not claim a migration has happened.
+
+## Follow-up check: the Tencent reference and the graph candidates
+
+The likely Tencent reference is **TencentDB Agent Memory**, not a database engine. Its current
+repository describes a team memory hub with Chat Memory, Skills, LLM-Wiki, and Code-Graph assets,
+layered memory from raw conversation to atoms/scenarios/persona, explicit private/team/restricted
+sharing, and an agent loadout. Its default installation still describes SQLite as the default
+backend and MongoDB as experimental. That makes it useful source material for MnemoGraph's future
+asset and skill model, but not a reason to replace the current store with a Tencent database.
+
+Tencent's **Tendis** is a Redis-protocol distributed key/value store backed by RocksDB and licensed
+GPLv3. It does not provide the property-graph traversal and typed relationship semantics needed by
+MnemoGraph, so Redis compatibility alone is not a fit.
+
+The strongest Chinese-origin graph alternative worth benchmarking is **NebulaGraph** (Vesoft), an
+Apache-2.0 distributed graph database with storage/compute separation, Raft consistency, RBAC and
+an openCypher-compatible query language. It is a service-scale graph candidate, not a drop-in
+replacement for the current SQLite contract. For an embedded Windows-first experiment,
+**LadybugDB** remains the smaller candidate: MIT, embedded, Cypher, full-text/vector indexes and
+serializable ACID transactions. Neither should be adopted because it sounds graph-native; both
+must beat the current scoped SQLite workload on measured traversal, write contention, restart and
+deletion tests.
+
+The QWAM/quantum-derived ranking stays above the database boundary. The store supplies an
+authorized, revision-consistent candidate graph; application code constructs the classical matrix
+and compares the result with PPR and bounded traversal. No current database is a quantum memory
+engine, and tensor/vector support is not quantum acceleration.

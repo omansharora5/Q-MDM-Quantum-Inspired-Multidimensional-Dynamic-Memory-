@@ -2,7 +2,7 @@
 
 ## Current v2 result
 
-Checked on 19 October 2026. `python -m pytest -q` reports **37 passed, 24 skipped**.
+Checked on 20 October 2026. `.venv/Scripts/python.exe -m pytest -q` reports **40 passed, 26 skipped**.
 Every skipped case is a real FalkorDB contract variant because no server was
 available. Five FalkorDB query-shape tests pass, but those do not execute Cypher
 and do not prove server atomicity or compatibility. A Starlette/httpx dependency
@@ -18,6 +18,10 @@ invalidates its old lease for a new action. Timestamp tests use different UTC
 offsets to catch lexical sorting mistakes. PPR and the experimental numerical
 walk conserve probability mass. The provider-neutral tool loop uses a scripted
 callback test; it is not a live model evaluation.
+
+The current contract also checks that one agent's exact recorded message can be
+recalled by another agent before a derived memory exists, while the raw message
+body is omitted from the persisted recall trace.
 
 Two independent OS client processes saved and handed off synthetic camera
 knowledge, then recalled and opened its evidence. The real MCP SDK subprocess

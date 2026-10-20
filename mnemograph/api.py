@@ -1,6 +1,8 @@
 import logging
+import os
 import sys
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from fastapi import Depends, FastAPI, Header, Query, Request
 from fastapi.responses import JSONResponse
@@ -12,16 +14,19 @@ from .models import Connect, Handoff, Recall, Write, Message, Dataset, Forget, C
 from .service import MemoryService
 
 
-def create_app(store, credentials: Credentials):
+def create_app(store, credentials: Credentials, allowed_hosts=None):
     service = MemoryService(store, credentials)
     app = FastAPI(title="Q-MDM memory service", version="0.3.0", docs_url="/api/docs", openapi_url="/api/openapi.json")
     app.state.service = service
-    app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "[::1]", "testserver"])
+    hosts = allowed_hosts or os.environ.get("MNEMO_ALLOWED_HOSTS", "localhost,127.0.0.1,[::1],testserver")
+    if isinstance(hosts, str):
+        hosts = [host.strip() for host in hosts.split(",") if host.strip()]
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=hosts)
 
     @app.middleware("http")
     async def headers(request: Request, call_next):
         origin = request.headers.get("origin")
-        if origin and origin != str(request.base_url).rstrip("/"):
+        if origin and urlsplit(origin).netloc != request.headers.get("host", request.url.netloc):
             return JSONResponse({"detail": "Cross-origin access is disabled"}, status_code=403)
         response = await call_next(request)
         response.headers["X-Content-Type-Options"] = "nosniff"
