@@ -1,0 +1,15 @@
+.venv/
+.local/
+.local*/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+*.pyc
+.env
+test-results/
+.work/
+.audit/
+docs/research-proposal.md
+docs/research-synthesis-v2.md
+artifacts/*.zip
+artifacts/demo-frames/rendered/

@@ -1,0 +1,16 @@
+const assert=require('node:assert/strict');
+const graph=require('../mnemograph/web/graph-engine.js');
+const nodes=[{id:'memory',type:'decision'},{id:'source',type:'source'},{id:'past',type:'revision'},{id:'agent',type:'agent'}];
+const layout=graph.layout(nodes,'memory',new Map());
+assert.deepEqual(layout.get('memory'),{x:0,y:0,z:0});
+assert.notEqual(layout.get('source').z,layout.get('past').z);
+const point={x:150,y:80,z:210}, flat=graph.project(point,{mode:'2d'});
+const first=graph.project(point,{mode:'3d',yaw:0,pitch:0}), rotated=graph.project(point,{mode:'3d',yaw:45,pitch:25});
+assert.equal(flat.scale,1);assert.ok(first.scale<1);assert.notEqual(first.x,rotated.x);assert.notEqual(first.y,rotated.y);
+const moved=graph.moveOnScreen(point,30,-15,{mode:'3d',yaw:30,pitch:20},.8);
+assert.notEqual(moved.x,point.x);assert.notEqual(moved.z,point.z);
+const pins=new Map([['source',{x:42,y:27,z:-100}]]);
+assert.equal(graph.layout(nodes,'memory',pins).get('source').x,42);
+const edge=graph.edge({x:0,y:0},{x:200,y:0});assert.match(edge.path,/^M34,0Q/);assert.ok(edge.path.endsWith('166,0'));
+assert.equal(graph.relation('SUPERSEDES'),'replaces');
+console.log('Graph engine: depth, orbit, tilt, drag, pinning, direction and relation labels passed.');

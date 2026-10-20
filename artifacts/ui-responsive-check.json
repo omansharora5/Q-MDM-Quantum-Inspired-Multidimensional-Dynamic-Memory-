@@ -1,0 +1,107 @@
+[
+  {
+    "width": 375,
+    "page": "Memory graph",
+    "document": 360,
+    "overflow": false,
+    "viewport": 360
+  },
+  {
+    "width": 375,
+    "page": "Memory flow",
+    "document": 360,
+    "overflow": false,
+    "viewport": 360
+  },
+  {
+    "width": 375,
+    "page": "Conversations",
+    "document": 360,
+    "overflow": false,
+    "viewport": 360
+  },
+  {
+    "width": 375,
+    "page": "Agent setup guide ↗",
+    "document": 360,
+    "overflow": false,
+    "viewport": 360
+  },
+  {
+    "width": 375,
+    "page": "Experiments",
+    "document": 360,
+    "overflow": false,
+    "viewport": 360
+  },
+  {
+    "width": 768,
+    "page": "Memory graph",
+    "document": 753,
+    "overflow": false,
+    "viewport": 753
+  },
+  {
+    "width": 768,
+    "page": "Memory flow",
+    "document": 753,
+    "overflow": false,
+    "viewport": 753
+  },
+  {
+    "width": 768,
+    "page": "Conversations",
+    "document": 753,
+    "overflow": false,
+    "viewport": 753
+  },
+  {
+    "width": 768,
+    "page": "Agent setup guide ↗",
+    "document": 753,
+    "overflow": false,
+    "viewport": 753
+  },
+  {
+    "width": 768,
+    "page": "Experiments",
+    "document": 753,
+    "overflow": false,
+    "viewport": 753
+  },
+  {
+    "width": 1440,
+    "page": "Memory graph",
+    "document": 1425,
+    "overflow": false,
+    "viewport": 1425
+  },
+  {
+    "width": 1440,
+    "page": "Memory flow",
+    "document": 1425,
+    "overflow": false,
+    "viewport": 1425
+  },
+  {
+    "width": 1440,
+    "page": "Conversations",
+    "document": 1425,
+    "overflow": false,
+    "viewport": 1425
+  },
+  {
+    "width": 1440,
+    "page": "Agent setup guide ↗",
+    "document": 1425,
+    "overflow": false,
+    "viewport": 1425
+  },
+  {
+    "width": 1440,
+    "page": "Experiments",
+    "document": 1425,
+    "overflow": false,
+    "viewport": 1425
+  }
+]

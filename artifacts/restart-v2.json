@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "records": 33,
+  "memories": 18,
+  "messages": 11,
+  "tasks": 3,
+  "checkpoints": 1,
+  "backend": "sqlite-development"
+}

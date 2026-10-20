@@ -1,0 +1,86 @@
+{
+  "status": "completed",
+  "trials": 2592,
+  "dataset_hash": "bd4ca310826eb23d7ffd9e25bea5080d2f20e11442061f9075d7b12091904cfa",
+  "aggregate": [
+    {
+      "method": "bm25",
+      "samples": 432,
+      "errors": 0,
+      "recall_at_k": 0.8333333333333334,
+      "evidence_precision": 0.4444444444444444,
+      "coverage": 0.6666666666666666,
+      "context_chars": 1715.2407407407406,
+      "abstention_success": 0.5,
+      "p50_ms": 8.1775,
+      "p95_ms": 20.652579999999997,
+      "stale_version_errors": 0
+    },
+    {
+      "method": "vector",
+      "samples": 432,
+      "errors": 0,
+      "recall_at_k": 0.8333333333333334,
+      "evidence_precision": 0.4444444444444444,
+      "coverage": 0.6666666666666666,
+      "context_chars": 1717.5185185185185,
+      "abstention_success": 0.5,
+      "p50_ms": 8.0642,
+      "p95_ms": 20.26749,
+      "stale_version_errors": 0
+    },
+    {
+      "method": "beam",
+      "samples": 432,
+      "errors": 0,
+      "recall_at_k": 1.0,
+      "evidence_precision": 0.5,
+      "coverage": 1.0,
+      "context_chars": 1924.0787037037037,
+      "abstention_success": 0.5,
+      "p50_ms": 8.82695,
+      "p95_ms": 22.18009,
+      "stale_version_errors": 0
+    },
+    {
+      "method": "ppr",
+      "samples": 432,
+      "errors": 0,
+      "recall_at_k": 1.0,
+      "evidence_precision": 0.5,
+      "coverage": 1.0,
+      "context_chars": 1930.912037037037,
+      "abstention_success": 0.5,
+      "p50_ms": 9.727450000000001,
+      "p95_ms": 22.369165,
+      "stale_version_errors": 0
+    },
+    {
+      "method": "pace",
+      "samples": 432,
+      "errors": 0,
+      "recall_at_k": 1.0,
+      "evidence_precision": 0.5,
+      "coverage": 1.0,
+      "context_chars": 1933.3240740740741,
+      "abstention_success": 0.5,
+      "p50_ms": 9.608149999999998,
+      "p95_ms": 22.96643,
+      "stale_version_errors": 0
+    },
+    {
+      "method": "qwam",
+      "samples": 432,
+      "errors": 0,
+      "recall_at_k": 1.0,
+      "evidence_precision": 0.5,
+      "coverage": 1.0,
+      "context_chars": 1925.773148148148,
+      "abstention_success": 0.5,
+      "p50_ms": 9.4749,
+      "p95_ms": 22.984984999999998,
+      "stale_version_errors": 0
+    }
+  ],
+  "output": "D:\\agent memory\\artifacts\\benchmarks"
+}

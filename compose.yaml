@@ -1,0 +1,12 @@
+services:
+  falkordb:
+    image: falkordb/falkordb:v6.0.2
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - graph-data:/data
+    environment:
+      REDIS_ARGS: "--appendonly yes --appendfsync everysec"
+    restart: unless-stopped
+volumes:
+  graph-data:

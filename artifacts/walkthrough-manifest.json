@@ -1,0 +1,53 @@
+{
+  "format": "Silent walkthrough assembled from real UI still captures, not continuous screen recording",
+  "backend": "sqlite-development",
+  "synthetic": true,
+  "frames": [
+    {
+      "source": "01-conversation.png",
+      "sha256": "b05fec50abc1908056aee9d14ea9fed2506038ea9cc46bb473a2fd3a85cb9ebf",
+      "caption": "Exact synthetic messages, times and links to derived memories.",
+      "seconds": 10
+    },
+    {
+      "source": "02-before.png",
+      "sha256": "f0c9143559e79c4b999c83083242a70c27287a79e32221058771ecf5973483d8",
+      "caption": "Before: the saved train decision points to its original source. Version 1.",
+      "seconds": 10
+    },
+    {
+      "source": "03-after.png",
+      "sha256": "cf44f717d7e2099a1ecf8a932989ebfe3a266bfedfdf9f2cca4caac812a0588e",
+      "caption": "After a real commit: coach plan, new source and links. Six added, five removed.",
+      "seconds": 12
+    },
+    {
+      "source": "04-history.png",
+      "sha256": "0cce22e299d520ac7ea209272e52e3be9f81dfe9173d8c598401c8c8d90e7cf3",
+      "caption": "The older train source remains inspectable through version 1 and its dimensions.",
+      "seconds": 10
+    },
+    {
+      "source": "05-connect.png",
+      "sha256": "9980a95aeae037724399bb435d66d40e94ed05b8764fffe34a15d568265818a0",
+      "caption": "Agents connect through local MCP or REST. Native remote ChatGPT still needs HTTPS/OAuth.",
+      "seconds": 12
+    },
+    {
+      "source": "06-results.png",
+      "sha256": "bedc1bc12de6edcd52c2f22bde9a010879cbb67036d5de6fdce2ede308f196fc",
+      "caption": "2,592 synthetic retrieval trials. The graph methods tie; no PACE or QWAM advantage.",
+      "seconds": 12
+    },
+    {
+      "source": "07-failure.png",
+      "sha256": "c308c6814bf6a6860b5034549106f747e7b202d9e6b9b71efabf2716738586ff",
+      "caption": "Missing-fact zero-result rate: 50% for every method. No answer model or vendor comparison.",
+      "seconds": 12
+    }
+  ],
+  "duration_seconds": 78,
+  "decode_check": "passed",
+  "video_sha256": "0495c447ff88120193c309f15091afa1fab0d5d28897b228109bd8d3494ab810",
+  "bytes": 1145058
+}
