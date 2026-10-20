@@ -199,7 +199,9 @@ controls. No Medium publication or model-provider deployment is claimed.
 2. Select a node to inspect the latest source message and time. Use its dimension
    buttons for semantic, temporal, provenance and collaboration neighborhoods.
 3. Hover or keyboard-focus an arrow to read its verb. Select it for the full
-   source-to-target explanation, including the stored relation type.
+   source-to-target explanation, including the stored relation type. Use the
+   connection filter to isolate evidence, memory context, agents/tasks, history
+   or conflicts.
 4. Drag nodes to arrange them. Placements persist across page reloads in the
    current browser session. **Arrange** restores the automatic layout.
 5. Select **3D explore** and use Orbit/Tilt or drag the background. Shift-drag pans.

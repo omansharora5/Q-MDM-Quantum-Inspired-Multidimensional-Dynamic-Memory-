@@ -44,6 +44,9 @@ examples from an exercised model session.
   explained an edge by keyboard, dragged the node, and observed saved x/y/z
   placement after a page reload. Orbit and tilt changed the camera. Returning
   to 2D preserved the selected record. Arrange cleared the saved placements.
+- The connection-type filter changed the selected sample from 18 arrows to four
+  evidence arrows, zero conflicts, and back to 18 arrows. Pointer activation
+  opened the source relationship. Filter controls also fit the 390px layout.
 - Agent setup copied complete terminal steps, reported the API-only check
   separately, and completed the REST-client step only after a matching heartbeat.
   A separate Codex selection remained waiting. No model session was implied.
@@ -64,3 +67,13 @@ not implemented adapters. The current 3D view is an SVG perspective projection
 with category depth and a movable camera, not WebGL or a neural embedding map.
 
 ![Current explorer and source relationship](assets/qmdm-explorer-2026-10-20.png)
+
+## Publication
+
+Code, tests, research decisions, the blog draft, plots and synthetic demo artifacts
+are published in [the Q-MDM repository](https://github.com/omansharora5/Q-MDM-Quantum-Inspired-Multidimensional-Dynamic-Memory-).
+The initial upload's GitHub Actions checks passed on Ubuntu and Windows with
+Python 3.12 and Node 22. Local validation used Python 3.14. Private runtime
+state, keys, virtual environments and imported conversation documents are excluded.
+The original placeholder file was preserved. No Medium post or model-provider
+configuration was published.

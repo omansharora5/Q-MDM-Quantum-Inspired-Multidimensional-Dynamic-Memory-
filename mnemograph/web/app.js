@@ -14,7 +14,7 @@ let flowStory=null,flowStage=0,flowPlaying=false,flowTimer=null;
 let spaceMode='2d', pitch=-10, pins=new Map(), pinScope='', setupInfo=null, setupAgent='developer', suppressClickUntil=0, edgeFilter='all';
 const sampleLabels={'personal-assistant':'Personal assistant','camera-lab':'Camera lab','team-planning':'Team planning'};
 const relationGroups={
-  evidence:new Set(['EVIDENCED_BY','SUPPORTED_BY','SOURCED_FROM','DERIVED_FROM']),
+  evidence:new Set(['SUPPORTS','EVIDENCED_BY','SUPPORTED_BY','SOURCED_FROM','DERIVED_FROM']),
   context:new Set(['ABOUT','CONTEXT','HAS_CUE','ASSOCIATED_WITH','RELATED_TO']),
   ownership:new Set(['WORKS_ON','AUTHORED_BY','COORDINATES','ASSIGNED_TO']),
   history:new Set(['HAS_REVISION','SUPERSEDES','REFINES','DUPLICATES']),
@@ -242,7 +242,7 @@ function renderGraph() {
   const layout=QMDMGraph.layout(nodes,focusMode?selected?.id:null,pins);
   graphElements=nodes.map(n=>({...n,...layout.get(n.id)}));
   edgeElements=graphData.edges.filter(e=>visible.has(e.source)&&visible.has(e.target)&&relationMatches(e));
-  const ghosts=removedEdges.filter(e=>visible.has(e.source)&&visible.has(e.target)).map(e=>({...e,removed:true}));
+  const ghosts=removedEdges.filter(e=>visible.has(e.source)&&visible.has(e.target)&&relationMatches(e)).map(e=>({...e,removed:true}));
   edgeElements.push(...ghosts);
   $('#graph-edges').innerHTML=edgeElements.map((e,i)=>{
     const a=graphData.nodes.find(n=>n.id===e.source),b=graphData.nodes.find(n=>n.id===e.target);
@@ -260,7 +260,7 @@ function renderGraph() {
   $('#graph').classList.toggle('graph-filtered',edgeFilter!=='all');
   $('#graph').classList.toggle('motion-paused',paused);
   $('#graph-heading').textContent=focusMode && selected ? selected.label : 'A memory, with its evidence.';
-  $('#graph-caption-text').textContent=focusMode ? `${$('#facet').selectedOptions[0].textContent} · ${Math.max(0,nodes.length-1)} connected records` : `${nodes.length} overview nodes · ${graphData.nodes.length} total records · open a node for evidence`;
+  $('#graph-caption-text').textContent=focusMode ? `${$('#facet').selectedOptions[0].textContent} · ${Math.max(0,nodes.length-1)} records · ${edgeElements.length} connections` : `${nodes.length} overview nodes · ${graphData.nodes.length} total records · open a node for evidence`;
   $('#graph-path').textContent=focusMode && selected ? `All memories / ${selected.label} / ${$('#facet').selectedOptions[0].textContent}`:'All memories';
   $('#graph-back').disabled=!focusMode;
   $('#all-view').classList.toggle('selected',!focusMode);
@@ -303,7 +303,7 @@ function setSpace(mode){
   spaceMode=mode;if(mode==='3d'&&rotation===0)rotation=20;
   $('#space-controls').hidden=mode!=='3d';$('#orbit').value=rotation;$('#tilt').value=pitch;
   for(const value of ['2d','3d']){const button=$('#space-'+value);button.classList.toggle('selected',mode===value);button.setAttribute('aria-pressed',String(mode===value));}
-  $('#graph-instructions').textContent=mode==='3d'?'3D view: drag the background to orbit, Shift-drag to pan, and drag a node to place it. Select an arrow to read its relationship. Depth groups meaning, sources, history and people.':'2D map: select a node to explore its sources. Drag nodes to arrange them. Select an arrow to read what it means.';
+  $('#graph-instructions').innerHTML=mode==='3d'?'<b>3D is the same graph:</b> drag the background to orbit, Shift-drag to pan, and drag a node to place it. Depth separates work, people, evidence, and history. Select an arrow to read its relationship.':'<b>How to read it:</b> Select a memory to open its evidence and dimensions. Click an arrow to read its meaning, or filter connections by type.';
   $('.graph-footnote').textContent=mode==='3d'?'Drag to orbit · Shift-drag to pan · Scroll to zoom':'Drag nodes to place · Drag background to pan · Scroll to zoom';
   renderGraph();fitGraph();
 }
@@ -367,9 +367,10 @@ async function inspect(node,drill=false,remember=true) {
     $('#evidence-content').innerHTML=`<div class="source-block"><b>${esc(source.title)}</b><p>${esc(source.text)}</p><small>${esc(source.uri)}<br>${esc(time(source.occurred_at))}${full.source_hash?'<br>SHA-256 '+esc(full.source_hash):''}</small></div><p class="quiet-note">History: ${(full.history||[]).map(x=>`v${x.version} · ${esc(x.actor)} · ${esc(time(x.at||x.updated_at))}`).join('<br>')}</p>`;
   });}
 }
-$('#all-view').onclick = () => {focusMode=false;$('#facet').value='all';$('#all-view').classList.add('selected');$('#focus-view').classList.remove('selected');renderGraph();fitGraph();};
+$('#all-view').onclick = () => {focusMode=false;$('#facet').value='all';edgeFilter='all';$('#relation-filter').value='all';$('#all-view').classList.add('selected');$('#focus-view').classList.remove('selected');renderGraph();fitGraph();};
 $('#focus-view').onclick = () => {if (!selected) return notify('Select a graph node first.');focusMode=true;$('#focus-view').classList.add('selected');$('#all-view').classList.remove('selected');renderGraph();fitGraph();};
 $('#facet').onchange=()=>{renderGraph();fitGraph();};
+$('#relation-filter').onchange=event=>{edgeFilter=event.target.value;$('#relation-detail').hidden=true;renderGraph();fitGraph();};
 $('#graph-back').onclick=()=>{const id=nodeHistory.pop();if(id){const n=graphData.nodes.find(n=>n.id===id);if(n)inspect(n,true,false);}else {focusMode=false;selected=null;$('#facet').value='all';renderGraph();fitGraph();}};
 $('#list-view').onclick=()=>{listMode=!listMode;$('#graph-list').hidden=!listMode;$('#graph').toggleAttribute('hidden',listMode);$('.graph-caption').hidden=listMode;$('#empty-graph').hidden=listMode||(state?.memories.length||0)>0;$('#list-view').setAttribute('aria-pressed',String(listMode));$('#list-view').classList.toggle('selected',listMode);};
 for(const [id,x,y]of [['pan-left',60,0],['pan-right',-60,0],['pan-up',0,60],['pan-down',0,-60]])$('#'+id).onclick=()=>{pan.x+=x;pan.y+=y;draw();};
@@ -378,7 +379,7 @@ $('#orbit').oninput=event=>{rotation=Number(event.target.value);draw();};
 $('#tilt').oninput=event=>{pitch=Number(event.target.value);draw();};
 $('#zoom-in').onclick=()=>{zoom=Math.min(2.5,zoom+.15);draw(performance.now());};
 $('#zoom-out').onclick=()=>{zoom=Math.max(.3,zoom-.15);draw(performance.now());};
-$('#reset-graph').onclick=()=>{zoom=1;pan={x:0,y:0};rotation=0;pitch=-10;$('#orbit').value=0;$('#tilt').value=pitch;packet=null;focusMode=false;$('#all-view').classList.add('selected');$('#focus-view').classList.remove('selected');renderGraph();fitGraph();};
+$('#reset-graph').onclick=()=>{zoom=1;pan={x:0,y:0};rotation=0;pitch=-10;$('#orbit').value=0;$('#tilt').value=pitch;edgeFilter='all';$('#relation-filter').value='all';packet=null;focusMode=false;$('#all-view').classList.add('selected');$('#focus-view').classList.remove('selected');renderGraph();fitGraph();};
 $('#graph-canvas').addEventListener('wheel',event=>{if(event.target.closest('button,input,select'))return;event.preventDefault();zoom=Math.max(.3,Math.min(2.5,zoom-event.deltaY*.001));draw(performance.now());},{passive:false});
 let drag;
 $('#graph').addEventListener('pointerdown',event=>{
@@ -508,7 +509,7 @@ renderConfig();
 if(paused){$('#pause').textContent='▷';$('#pause').setAttribute('aria-label','Resume graph animation');}
 async function generateData(button){await action(button,async()=>{if(!dataset){dataset='personal-assistant';$('#dataset').value=dataset;}await api('/demo','POST',{dataset});lastRevision=-1;await refresh(true);fitGraph();notify('Synthetic sample loaded. No external account connected.');});}
 $('#generate-data').onclick=e=>generateData(e.currentTarget);
-$('#dataset').onchange=async e=>{dataset=e.target.value;$('#relation-detail').hidden=true;lastRevision=-1;graphVersion=-1;graphData={nodes:[],edges:[]};positions.clear();selected=null;nodeHistory=[];focusMode=false;packet=null;$('#facet').value='all';$('#evolve-data').disabled=!dataset;await refresh(true);fitGraph();};
+$('#dataset').onchange=async e=>{dataset=e.target.value;$('#relation-detail').hidden=true;lastRevision=-1;graphVersion=-1;graphData={nodes:[],edges:[]};positions.clear();selected=null;nodeHistory=[];focusMode=false;packet=null;edgeFilter='all';$('#facet').value='all';$('#relation-filter').value='all';$('#evolve-data').disabled=!dataset;await refresh(true);fitGraph();};
 $('#evolve-data').onclick=e=>action(e.currentTarget,async()=>{if(!dataset)return;const receipt=await api('/demo/evolve','POST',{dataset});await refresh(true);const id=receipt.id||receipt.memory_id||receipt.changed_memory_id;const node=graphData.nodes.find(n=>n.id===id);if(node)inspect(node,true);notify('Change receipt saved. Added links are green; removed links are dashed.');});
 function extractionWhy(entry, inline=false){
   const features=entry.features||{};
