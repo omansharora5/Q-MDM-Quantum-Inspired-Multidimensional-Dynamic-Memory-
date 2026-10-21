@@ -3,6 +3,8 @@
 Shared, persistent memory for independent agents. The backend owns the memory;
 Codex, Claude Code, custom programs, and local LLM agents access it through MCP
 or REST. A localhost dashboard explores the same records and recall traces.
+Local storage and retrieval are the default. Hosting is optional; using a cloud
+model still sends the context selected for that model outside your computer.
 
 Q-MDM uses the `mnemograph` Python package for compatibility with existing clients.
 This is a working foundation described in the [v2 specification](docs/v2/system-spec.md).
@@ -11,6 +13,11 @@ The supplied research contains future ideas, not implementation claims. The
 The current product is independent of the original hackathon. See the
 [latest product update](docs/product-update-2026-10-21.md) and
 [database decision](docs/storage-decision-2026-10-20.md).
+
+The [desktop plugin and browser-extension feasibility study](docs/local-first-memory-feasibility-2026-10-21.md)
+sets out the next integration work. The current release is a local Python service
+with a browser dashboard. A packaged desktop app, automatic prompt hooks and a
+ChatGPT/Claude browser extension are proposed, not shipped.
 
 ![Memory explorer](docs/assets/qmdm-explorer-2026-10-20.png)
 

@@ -5,6 +5,16 @@ its file, shell, or business tools. The model requests memory when relevant;
 your host executes the call and adds the returned evidence to the conversation.
 MnemoGraph works independently of model weights, inference caches, and providers.
 
+For **memory before every submitted prompt**, retrieval must run in the host
+before the model call, rather than depend on the model choosing a memory tool.
+The existing [custom agent example](../examples/agent_tool_loop.py) already calls
+`recall` before its first model callback. MCP configuration alone does not impose
+that order. Host hooks and a browser extension are the proposed next adapters;
+see the [local-first feasibility study](local-first-memory-feasibility-2026-10-21.md)
+for platform support, privacy boundaries and release checks. These adapters
+cannot disable a provider's built-in memory or guarantee that an answer follows
+the retrieved evidence.
+
 ## Shared setup
 
 Start the memory service and use a separate identity for each agent:
