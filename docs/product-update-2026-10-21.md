@@ -64,11 +64,10 @@ longer than the video and checks the decoded export's format before reporting su
 
 A fresh video dependency installation and full frame rebuild were not repeated.
 Real Codex/Claude/provider model sessions, alternative database runtimes and
-production durability were not exercised. The isolated guide checks use the same
-entrypoint as Vercel; successful local checks alone do not establish a new live
-deployment.
+production durability were not exercised. The isolated guide checks were
+supplemented by the deployed checks below.
 
-![Isolated remote setup verification](assets/remote-setup-2026-10-21.png)
+![Verified hosted connection guide](assets/remote-setup-2026-10-21.png)
 
 ## Deployment inputs
 
@@ -78,3 +77,23 @@ saved benchmark JSON reports. Local databases/keys, environments, imported
 conversations, scratch files and video rendering intermediates are excluded.
 The selected payload was scanned against local credentials. This follows
 [Vercel's documented allowlist format](https://vercel.com/docs/deployments/vercel-ignore).
+
+## Live deployment verified
+
+The existing [public demo](https://qmdm-quantum-memory.vercel.app) was updated from
+application commit `0c6174f` on October 21. Vercel reported the existing production
+alias ready. Independent requests then confirmed remote setup mode, omitted
+server paths, six personal-assistant memories, ten exact source messages, and
+rejection of an invalid key. The served JavaScript SHA-256 matched the checkout.
+
+A real local MCP subprocess connected to that deployed service using the published
+demo credential. It discovered 14 tools and exercised connect, scoped recall and
+version-specific source expansion against synthetic records. No model ran.
+The deployed browser guide generated client-side Python configuration with the
+correct HTTPS origin. Its phone-sized layout had no document overflow. The
+application commit's GitHub checks passed on both Windows and Ubuntu.
+
+The existing project, domain and access configuration were retained. The demo
+still uses disposable per-instance SQLite storage and is not a durable hosted
+memory service. The illustrated product video remains available from GitHub;
+video and rendering intermediates are excluded from the application deployment.
