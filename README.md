@@ -15,6 +15,7 @@ The current product is independent of the original hackathon. See the
 ![Memory explorer](docs/assets/qmdm-explorer-2026-10-20.png)
 
 [Watch the 20-second illustrated product video](artifacts/qmdm-video/qmdm-one-memory-every-agent.mp4)
+or [download the MP4](https://raw.githubusercontent.com/omansharora5/Q-MDM-Quantum-Inspired-Multidimensional-Dynamic-Memory-/main/artifacts/qmdm-video/qmdm-one-memory-every-agent.mp4).
 
 The narrated animation uses synthetic examples. [Storyboard and rebuild instructions](artifacts/qmdm-video/README.md).
 
@@ -23,9 +24,21 @@ The narrated animation uses synthetic examples. [Storyboard and rebuild instruct
 - Site: **https://qmdm-quantum-memory.vercel.app**
 - Public workspace key: `qmdm-demo-aDr9oE5I8I4utiyPlIpTeOYJDCYD43FU7CPXMt7COFg`
 
+1. Open the site and paste the public workspace key into the login.
+2. Explore the preloaded personal-assistant memories. Select a node to inspect
+   its source messages, timestamps and dimensions, or open **Conversations**.
+3. Open **Agent setup guide**, choose your agent platform, and follow the
+   generated instructions. It checks API access and a matching agent heartbeat
+   separately. See [Connect an agent](#connect-an-agent) for details.
+
 The deployment is a disposable sandbox. Data lives in `/tmp`, resets on cold
 starts, and can differ between instances. Use your own local install for real
-memory.
+memory. No paid API key is needed to explore the demo. A model provider's key,
+if your agent needs one, belongs in that agent's private configuration.
+
+For your own persistent workspace, follow [Run locally on Windows](#run-locally-on-windows).
+Local credentials are generated on your machine; the public demo key does not
+open local workspaces.
 
 ## Deploy on Vercel
 
@@ -106,9 +119,12 @@ curl.exe -H "Authorization: Bearer qmdm-demo-aDr9oE5I8I4utiyPlIpTeOYJDCYD43FU7CP
 ## Run locally on Windows
 
 ```powershell
-# Run from the cloned repository folder
+git clone https://github.com/omansharora5/Q-MDM-Quantum-Inspired-Multidimensional-Dynamic-Memory-.git
+Set-Location Q-MDM-Quantum-Inspired-Multidimensional-Dynamic-Memory-
 .\start.ps1
 ```
+
+If you already cloned the repository, run `.\start.ps1` from that folder.
 
 Open **http://127.0.0.1:8000**. Paste the `operator` key from `.local/keys.json`.
 Python 3.11 or newer is required.
