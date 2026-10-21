@@ -14,6 +14,15 @@ The current product is independent of the original hackathon. See the
 
 ![Memory explorer](docs/assets/qmdm-explorer-2026-10-20.png)
 
+## Live demo
+
+- Site: **https://qmdm-quantum-memory.vercel.app**
+- Public workspace key: `qmdm-demo-aDr9oE5I8I4utiyPlIpTeOYJDCYD43FU7CPXMt7COFg`
+
+The deployment is a disposable sandbox. Data lives in `/tmp`, resets on cold
+starts, and can differ between instances. Use your own local install for real
+memory.
+
 ## Deploy on Vercel
 
 The dashboard and REST API deploy as one Vercel Function. The entrypoint is
@@ -79,9 +88,9 @@ Optional environment variables:
 Check a deployment:
 
 ```powershell
-curl.exe https://YOUR-PROJECT.vercel.app/api/health
+curl.exe https://qmdm-quantum-memory.vercel.app/api/health
 curl.exe -H "Authorization: Bearer qmdm-demo-aDr9oE5I8I4utiyPlIpTeOYJDCYD43FU7CPXMt7COFg" `
-  https://YOUR-PROJECT.vercel.app/api/state
+  https://qmdm-quantum-memory.vercel.app/api/state
 ```
 
 ## Run locally on Windows
