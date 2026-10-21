@@ -69,3 +69,12 @@ entrypoint as Vercel; successful local checks alone do not establish a new live
 deployment.
 
 ![Isolated remote setup verification](assets/remote-setup-2026-10-21.png)
+
+## Deployment inputs
+
+The Vercel CLI dry run detected FastAPI and selected 24 files, totaling about
+2.76 MB. `.vercelignore` allows application sources, package metadata and the two
+saved benchmark JSON reports. Local databases/keys, environments, imported
+conversations, scratch files and video rendering intermediates are excluded.
+The selected payload was scanned against local credentials. This follows
+[Vercel's documented allowlist format](https://vercel.com/docs/deployments/vercel-ignore).
