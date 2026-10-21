@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import subprocess
+import wave
 from pathlib import Path
 
 
@@ -27,11 +29,14 @@ def run_voiceover() -> None:
         "Add-Type -AssemblyName System.Speech; "
         "$s=New-Object System.Speech.Synthesis.SpeechSynthesizer; "
         "$s.SelectVoice('Microsoft Zira Desktop'); "
-        "$s.Rate=0; $s.Volume=95; "
+        "$s.Rate=4; $s.Volume=95; "
         "$s.SetOutputToWaveFile('" + str(VOICE).replace("'", "''") + "'); "
         "$s.Speak('" + escaped + "'); $s.Dispose()"
     )
     subprocess.run(["powershell", "-NoProfile", "-Command", command], check=True)
+    with wave.open(str(VOICE)) as voice:
+        if voice.getnframes() / voice.getframerate() > 20:
+            raise ValueError("Narration exceeds 20 seconds; shorten it before encoding")
 
 
 def encode() -> None:
@@ -48,9 +53,13 @@ def encode() -> None:
 
 def verify() -> dict:
     ffmpeg = ffmpeg_path()
-    result = subprocess.run([ffmpeg, "-v", "error", "-i", str(OUTPUT), "-f", "null", "-"], capture_output=True, text=True)
+    result = subprocess.run([ffmpeg, "-hide_banner", "-i", str(OUTPUT), "-progress", "pipe:1", "-f", "null", "-"], capture_output=True, text=True)
     if result.returncode:
         raise RuntimeError(result.stderr)
+    frames = re.findall(r"^frame=(\d+)", result.stdout, re.MULTILINE)
+    if not (frames and frames[-1] == "480" and "out_time=00:00:20." in result.stdout
+            and re.search(r"Video: h264.*1920x1080.*24 fps", result.stderr) and "Audio: aac" in result.stderr):
+        raise RuntimeError("Export must contain 480 frames at 1920x1080/24fps, 20 seconds and AAC audio")
     return {
         "name": "Q-MDM: One memory, every agent",
         "duration_seconds": 20,

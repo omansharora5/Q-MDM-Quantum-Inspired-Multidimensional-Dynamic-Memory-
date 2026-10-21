@@ -25,6 +25,26 @@ API access. This records a `connection-check` heartbeat, not a model session.
 The dashboard only completes a host setup when the selected identity sends a
 matching host heartbeat.
 
+## Connecting to a hosted service
+
+Open the hosted dashboard's **Agent setup guide**. Run its terminal steps on your
+computer. For MCP, install the bridge in your cloned Q-MDM folder first; the guide
+prepares a local virtual environment and puts its Python on that terminal's PATH.
+Launch Codex or Claude Code from that same terminal. The generated MCP command
+uses your local `python`, and `MNEMO_URL` uses the dashboard's browser origin.
+The memory service's own Python executable is unrelated to the client executable.
+
+The guide prompts for the selected identity's key using `Read-Host -AsSecureString`.
+REST clients need no Python bridge. The API check records `connection-check`;
+only a matching host heartbeat completes the host step. Copying the commands
+leaves access untested until a client contacts the service. For a local server,
+the guide retains the local key-file lookup and absolute Python path.
+
+The public Vercel deployment is disposable. Its published key grants access only
+to that demo; use synthetic data there. A real deployment needs durable storage
+and separate identities. No hosted provider or ChatGPT website session has been
+configured by these examples.
+
 ## Codex CLI or a compatible Codex host
 
 Replace the example Python path with the absolute path in your clone, or copy the generated configuration from **Agent setup guide**. Add this server table to your chosen Codex `config.toml`:

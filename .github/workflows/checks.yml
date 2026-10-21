@@ -20,3 +20,5 @@ jobs:
       - run: python -m pytest -q
       - run: node --check mnemograph/web/app.js
       - run: node tests/graph-engine.test.cjs
+      - run: node --check artifacts/qmdm-video/render_frames.cjs
+      - run: node --check artifacts/qmdm-video/video.js

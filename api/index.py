@@ -16,7 +16,7 @@ from pathlib import Path
 
 from mnemograph.api import create_app
 from mnemograph.auth import Credentials
-from mnemograph.demo import seed
+from mnemograph.demo import seed_dataset
 from mnemograph.store import SQLiteStore
 
 # Public credential for the deployed demo. It is intentionally published in the
@@ -33,7 +33,7 @@ credentials = Credentials([{
 }])
 
 store = SQLiteStore(DATA_DIR / "memory.db")
-app = create_app(store, credentials, allowed_hosts=["*"])
+app = create_app(store, credentials, allowed_hosts=["*"], local_setup=False)
 
 if os.environ.get("MNEMO_AUTOSEED", "1") != "0":
-    seed(app.state.service, credentials.authorize(DEMO_KEY))
+    seed_dataset(app.state.service, credentials.authorize(DEMO_KEY), "personal-assistant")

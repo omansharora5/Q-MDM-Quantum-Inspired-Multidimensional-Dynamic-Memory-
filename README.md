@@ -9,10 +9,14 @@ This is a working foundation described in the [v2 specification](docs/v2/system-
 The supplied research contains future ideas, not implementation claims. The
 [source review](docs/research-v2-source-review.md) records what informed the build.
 The current product is independent of the original hackathon. See the
-[product update](docs/product-update-2026-10-20.md) and
+[latest product update](docs/product-update-2026-10-21.md) and
 [database decision](docs/storage-decision-2026-10-20.md).
 
 ![Memory explorer](docs/assets/qmdm-explorer-2026-10-20.png)
+
+[Watch the 20-second illustrated product video](artifacts/qmdm-video/qmdm-one-memory-every-agent.mp4)
+
+The narrated animation uses synthetic examples. [Storyboard and rebuild instructions](artifacts/qmdm-video/README.md).
 
 ## Live demo
 
@@ -59,12 +63,18 @@ not durable storage.
 - Exports `app` for Vercel's Python runtime.
 - Stores SQLite at `/tmp/mnemograph/memory.db`. Vercel Functions have a
   read-only filesystem except `/tmp`, so this is the only writable local path.
-- Seeds eight synthetic memories on cold start. `MNEMO_AUTOSEED=0` disables it.
+- Seeds the six-memory personal-assistant sample and its source messages on cold start. `MNEMO_AUTOSEED=0` disables it.
 - Allows any host in the deployment adapter. The local server still defaults to
   `localhost`, `127.0.0.1`, `[::1]`, and `testserver`; override with
   `MNEMO_ALLOWED_HOSTS` (comma-separated).
 - Replaces the browser origin check with a host comparison, so HTTPS Vercel
   deployments work behind the proxy without allowing cross-origin requests.
+
+The hosted setup guide uses a bridge installed on the visitor's computer and
+a securely prompted workspace key. The server's Python and file paths stay out
+of the remote setup response. The dashboard does not overwrite an agent's
+heartbeat on the shared demo identity. Copying instructions alone does not
+complete the access check.
 
 Optional environment variables:
 

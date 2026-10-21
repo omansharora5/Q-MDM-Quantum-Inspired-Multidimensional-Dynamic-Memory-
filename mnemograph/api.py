@@ -14,7 +14,7 @@ from .models import Connect, Handoff, Recall, Write, Message, Dataset, Forget, C
 from .service import MemoryService
 
 
-def create_app(store, credentials: Credentials, allowed_hosts=None):
+def create_app(store, credentials: Credentials, allowed_hosts=None, *, local_setup=True):
     service = MemoryService(store, credentials)
     app = FastAPI(title="Q-MDM memory service", version="0.3.0", docs_url="/api/docs", openapi_url="/api/openapi.json")
     app.state.service = service
@@ -58,8 +58,9 @@ def create_app(store, credentials: Credentials, allowed_hosts=None):
 
     @app.get("/api/setup")
     def setup(request: Request, scope=Depends(read)):
-        return {"python":sys.executable, "workspace":str(Path(__file__).resolve().parent.parent),
-                "data_directory":str(Path(store.path).resolve().parent) if hasattr(store,"path") else None,
+        return {"local_setup":local_setup, "python":sys.executable if local_setup else None,
+                "workspace":str(Path(__file__).resolve().parent.parent) if local_setup else None,
+                "data_directory":str(Path(store.path).resolve().parent) if local_setup and hasattr(store,"path") else None,
                 "url":str(request.base_url).rstrip("/"), "tenant":scope.tenant, "project":scope.project,
                 "agents":credentials.agents(scope), "storage":store.name}
 

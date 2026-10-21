@@ -101,8 +101,9 @@ async function refresh(force=false) {
     lastPollError = false;
     $('#workspace-name').textContent = state.project;
     $('#actor-label').textContent = state.agent;
-    $('#store-label').textContent = state.storage === 'falkordb' ? 'FalkorDB · persistent graph' : 'SQLite · local storage';
-    $('#footer-storage').textContent = state.storage === 'falkordb' ? 'FalkorDB · graph backend' : 'Local SQLite · replaceable storage';
+    $('.local-label').textContent=location.host;
+    $('#store-label').textContent = state.storage === 'falkordb' ? 'FalkorDB · persistent graph' : setupInfo?.local_setup===false?'SQLite · service storage':'SQLite · local storage';
+    $('#footer-storage').textContent = state.storage === 'falkordb' ? 'FalkorDB · graph backend' : setupInfo?.local_setup===false?'SQLite · remote service':'Local SQLite · replaceable storage';
     $('#memory-count').textContent = state.memories.length;
     $('#nav-count').textContent = state.memories.length;
     $('#agent-count').innerHTML = state.agents.filter(a => a.status === 'active').length + `<em> / ${state.agents.length}</em>`;
@@ -140,8 +141,8 @@ $('#login-form').addEventListener('submit', async event => {
     $('#api-key').value = '';
     $('#login-error').textContent = '';
     $('#login-dialog').close();
-    await api('/connect','POST',{platform:'dashboard',context:'Exploring shared memory'});
     await refresh(true);
+    if(setupInfo?.local_setup!==false)await api('/connect','POST',{platform:'dashboard',context:'Exploring shared memory'});
     if (currentPage()==='flow') loadFlow();
   } catch (error) { $('#login-error').textContent = error.message; token = ''; }
   finally { button.disabled = false; }
@@ -439,7 +440,7 @@ $('#memory-form').addEventListener('submit',async event=>{
   finally{button.disabled=false;}
 });
 const configs={
-  chatgpt:{instruction:'The ordinary ChatGPT website cannot silently access this localhost service. No ChatGPT integration has been installed. For an API agent, give your tool loop these REST/SDK operations. A remote ChatGPT Apps/MCP connection needs a supported integration, an HTTPS endpoint and OAuth for protected data; localhost REST is not HTTP MCP.',code:`# API-driven ChatGPT agent or custom model wrapper\n# Register memory tools in your agent loop:\nPOST /api/connect    {"platform":"openai-api-agent"}\nPOST /api/messages   # record exact, consented messages\nPOST /api/recall     # retrieve bounded context\nGET  /api/memories/{id}?version={version}\nPOST /api/memories   # save sourced outcomes\n\n# Call /api/connect periodically for live presence.\n# The personal-assistant sample is entirely synthetic.`},
+  chatgpt:{instruction:'For an API-driven agent, expose these REST/SDK operations through its tool loop. Connecting the ordinary ChatGPT website requires a supported remote MCP integration, HTTPS and OAuth for protected data. This service provides REST and a local stdio bridge; a ChatGPT website integration is not installed.',code:`# API-driven ChatGPT agent or custom model wrapper\n# Register memory tools in your agent loop:\nPOST /api/connect    {"platform":"openai-api-agent"}\nPOST /api/messages   # record exact, consented messages\nPOST /api/recall     # retrieve bounded context\nGET  /api/memories/{id}?version={version}\nPOST /api/memories   # save sourced outcomes\n\n# Call /api/connect periodically for live presence.\n# The personal-assistant sample is entirely synthetic.`},
   codex:{instruction:'Add to your Codex config.toml. Set MNEMO_TOKEN in the environment that launches Codex.',code:`[mcp_servers.mnemograph]\ncommand = "D:/agent memory/.venv/Scripts/python.exe"\nargs = ["-m", "mnemograph.mcp_server"]\nenv_vars = ["MNEMO_TOKEN"]\n\n[mcp_servers.mnemograph.env]\nMNEMO_URL = "http://127.0.0.1:8000"\nMNEMO_PLATFORM = "codex"`},
   claude:{instruction:'Add to your project .mcp.json. Replace the executable path if you move the project.',code:JSON.stringify({mcpServers:{mnemograph:{type:'stdio',command:'D:/agent memory/.venv/Scripts/python.exe',args:['-m','mnemograph.mcp_server'],env:{MNEMO_TOKEN:'${MNEMO_TOKEN}',MNEMO_URL:'http://127.0.0.1:8000',MNEMO_PLATFORM:'claude-code'}}}},null,2)},
   python:{instruction:'Expose these client methods as tools in your agent loop. The same client works with API models and local models.',code:`from mnemograph.client import MemoryClient\n\n# MNEMO_TOKEN is a scoped credential in your environment.\nwith MemoryClient() as memory:\n    memory.connect("local-llm", "Continue the travel planning task")\n    state = memory.context()\n    packet = memory.recall("travel plan", budget_chars=2400)\n    for handle in packet["handles"]:\n        evidence = memory.expand(handle["id"], handle["version"])\n        # Pass needed evidence to your model as untrusted data.\n    # memory.remember(memory_record, key="task-42:decision")`},
@@ -447,8 +448,8 @@ const configs={
 };
 function powershell(value){return "'"+String(value).replaceAll("'","''")+"'";}
 function renderConfig(){
-  if(setupInfo?.python){
-    const python=setupInfo.python.replaceAll('\\','/'),url=setupInfo.url;
+  if(setupInfo){
+    const python=setupInfo.local_setup===false?'python':(setupInfo.python||'python').replaceAll('\\','/'),url=setupInfo.local_setup===false?location.origin:setupInfo.url||location.origin;
     configs.codex.code=`[mcp_servers.mnemograph]
 command = ${JSON.stringify(python)}
 args = ["-m", "mnemograph.mcp_server"]
@@ -481,7 +482,23 @@ function renderSetup(){
   if(selector.innerHTML!==options)selector.innerHTML=options;selector.value=setupAgent;
   const dir=setupInfo.data_directory||setupInfo.workspace+'/.local';
   const label=[state.tenant,state.project,setupAgent].join('/');
-  $('#setup-shell').textContent=`Set-Location -LiteralPath ${powershell(setupInfo.workspace||'.')}
+  const remote=setupInfo.local_setup===false;
+  $('#setup-intro').textContent=remote?'Your agent runs on your computer and calls this remote memory service. Run the steps on your computer. MCP uses a locally installed bridge; the memory service needs no model-provider key.':'This browser is the dashboard. Your agent runs separately and calls the same local memory service. Follow the steps below; no model-provider key is needed by the memory service.';
+  $('#setup-key-note').textContent=remote?'Run this PowerShell block on your computer. For MCP or Python, start in your cloned Q-MDM folder. Enter the selected identity\'s workspace key at the secure prompt. This tests API access; it does not start a model.':'Every agent gets its own workspace key. Run this PowerShell block in the terminal you will use to launch the agent. It loads the selected identity locally and tests the API; it does not start a model.';
+  $('#integration-key-note').textContent=remote?'Get a scoped workspace key from the service operator. The published demo key works only for the disposable demo. Launch your MCP host from the prepared terminal so it finds the local Python bridge. These examples do not change host configuration. The service offers REST; MCP uses a local stdio bridge.':'Use a separate scoped key for each agent. Keys live in .local/keys.json. These templates do not change your host configuration. REST is an HTTP API; the MCP bridge uses stdio. This service does not expose HTTP MCP.';
+  const bridge=activeIntegration==='rest'?'':`# Run from your cloned Q-MDM repository folder.
+python -m venv .venv
+& '.\\.venv\\Scripts\\python.exe' -m pip install -e .
+$env:PATH = (Resolve-Path '.\\.venv\\Scripts').Path + [IO.Path]::PathSeparator + $env:PATH
+`;
+  $('#setup-shell').textContent=remote?`${bridge}$taskKey = Read-Host 'Workspace key for ${setupAgent}' -AsSecureString
+$env:MNEMO_TOKEN = [Net.NetworkCredential]::new('', $taskKey).Password
+$env:MNEMO_URL = ${powershell(location.origin)}
+$headers = @{ Authorization = "Bearer $env:MNEMO_TOKEN" }
+$body = @{ platform = 'connection-check'; context = 'API access test' } | ConvertTo-Json
+Invoke-RestMethod -Method Post -Uri "$env:MNEMO_URL/api/connect" -Headers $headers -ContentType 'application/json' -Body $body | Out-Null
+Invoke-RestMethod -Uri "$env:MNEMO_URL/api/context" -Headers $headers | Out-Null
+Write-Host 'API access passed. Start the selected agent to complete its connection.'`:`Set-Location -LiteralPath ${powershell(setupInfo.workspace||'.')}
 $taskKeys = Get-Content -Raw -LiteralPath ${powershell(dir+'/keys.json')} | ConvertFrom-Json
 $env:MNEMO_TOKEN = $taskKeys.PSObject.Properties[${powershell(label)}].Value
 if (-not $env:MNEMO_TOKEN) { $env:MNEMO_TOKEN = $taskKeys.PSObject.Properties[${powershell(setupAgent)}].Value }
@@ -495,15 +512,16 @@ function updateSetupStatus(){
   const platform={codex:'codex',claude:'claude-code',chatgpt:'openai-api-agent',python:'local-llm',rest:'custom-rest'}[activeIntegration];
   const agent=(state?.agents||[]).find(agent=>agent.id===setupAgent);
   const connected=agent?.status==='active'&&agent.platform===platform;
+  markSetupStep(2,Boolean(agent?.status==='active'&&agent.platform!=='dashboard'));
   markSetupStep(3,connected);status.classList.toggle('ok',connected);
   status.textContent=connected?`${setupAgent} contacted this service as ${platform}. Last heartbeat: ${time(agent.last_seen)}.`
-    :agent?.status==='active'&&agent.platform==='connection-check'?`API connection test passed for ${setupAgent}. Now start ${platform} and ask it to call memory_connect.`
+    :agent?.status==='active'&&agent.platform==='connection-check'?`API connection test passed for ${setupAgent}. Complete step 3 to connect your selected agent.`
     :`Waiting for ${setupAgent} to contact the service as ${platform}. This dashboard does not count as an agent connection.`;
 }
 $('#setup-agent').onchange=event=>{setupAgent=event.target.value;renderSetup();};
 document.querySelectorAll('[data-integration]').forEach(button=>button.onclick=()=>selectIntegration(button.dataset.integration));
 document.querySelectorAll('[data-setup]').forEach(button=>button.onclick=()=>selectIntegration(button.dataset.setup));
-async function copySetup(selector,button){try{await navigator.clipboard.writeText($(selector).textContent);markSetupStep(2);notify('Copied. Run or save it in your agent environment.');}catch{notify('Clipboard unavailable. Select the text and copy it.');}}
+async function copySetup(selector,button){try{await navigator.clipboard.writeText($(selector).textContent);notify('Copied. Run or save it in your agent environment.');}catch{notify('Clipboard unavailable. Select the text and copy it.');}}
 $('#copy-config').onclick=event=>copySetup('#integration-code',event.currentTarget);
 $('#copy-shell').onclick=event=>copySetup('#setup-shell',event.currentTarget);
 renderConfig();
@@ -647,7 +665,7 @@ function flowStageMemory(story){
   const title=meta?.title||node?.label||'Memory';
   const cues=(node?.record?.payload?.cues||[]);
   const linkCount=node?graphData.edges.filter(edge=>edge.source===node.id||edge.target===node.id).length:0;
-  return `${flowHead(3)}<div class="flow-memory"><div class="flow-badges"><span class="flow-badge group">${esc(kindGroups[kind]||'Facts')}</span><span class="flow-badge">${esc(kind||'memory')}</span><span class="flow-badge version">v${version}</span></div><h3>${esc(title)}</h3>${cues.length?`<div class="why-chips">${cues.map(cue=>`<span class="tiny-chip">cue: ${esc(cue)}</span>`).join('')}</div>`:''}${node?flowDiagram(node):'<p class="quiet-note">The record is not in the current graph view.</p>'}<p class="quiet-note">${story.snapshot?.storage==='falkordb'?'Saved to FalkorDB graph':'Saved to local SQLite'}${node?` · ${linkCount} linked records`:''}</p></div>`;
+  return `${flowHead(3)}<div class="flow-memory"><div class="flow-badges"><span class="flow-badge group">${esc(kindGroups[kind]||'Facts')}</span><span class="flow-badge">${esc(kind||'memory')}</span><span class="flow-badge version">v${version}</span></div><h3>${esc(title)}</h3>${cues.length?`<div class="why-chips">${cues.map(cue=>`<span class="tiny-chip">cue: ${esc(cue)}</span>`).join('')}</div>`:''}${node?flowDiagram(node):'<p class="quiet-note">The record is not in the current graph view.</p>'}<p class="quiet-note">${story.snapshot?.storage==='falkordb'?'Saved to FalkorDB graph':setupInfo?.local_setup===false?'Saved to service SQLite':'Saved to local SQLite'}${node?` · ${linkCount} linked records`:''}</p></div>`;
 }
 function flowStageRecall(story){
   const packet=story.packet;
@@ -711,4 +729,4 @@ async function loadExperiments(){
 $('#refresh-experiments').onclick=e=>action(e.currentTarget,loadExperiments);
 if(!token)$('#login-dialog').showModal();else refresh(true);
 setInterval(()=>{if(token && !document.hidden)refresh();},2500);
-setInterval(async()=>{if(token && !document.hidden){try{await api('/connect','POST',{platform:'dashboard',context:'Exploring shared memory'});}catch(error){fail(error);}}},60000);
+setInterval(async()=>{if(token && !document.hidden && setupInfo?.local_setup!==false){try{await api('/connect','POST',{platform:'dashboard',context:'Exploring shared memory'});}catch(error){fail(error);}}},60000);

@@ -1,0 +1,10 @@
+{
+  "name": "Q-MDM: One memory, every agent",
+  "duration_seconds": 20,
+  "fps": 24,
+  "resolution": "1920x1080",
+  "audio": "SAPI Microsoft Zira Desktop voiceover, AAC",
+  "video_sha256": "027c16674a5e91ce30362e579eb8703f5eae9c0cc6e17fd902775a03f80be942",
+  "bytes": 1926347,
+  "decode_check": "passed"
+}
